@@ -52,12 +52,12 @@ var loadChecks = function(checksfile) {
 var checkUrl = function(theUrl, checksfile) {
     var thePage = "";
     var out = {};
-    console.log("Trying to read great URL: " + theUrl);
+    //console.log("Trying to read great URL: " + theUrl);
     rest.get(theUrl).on('complete', function(result, response) {
 	if (result instanceof Error) {
 	    console.log('Error: ' + response.message);
 	} else {
-	    console.log("Got the URL will return result ");
+	    //console.log("Got the URL will return result ");
 	    thePage = result;
 	    //sys.puts(result);
 
@@ -68,7 +68,8 @@ var checkUrl = function(theUrl, checksfile) {
 		out[checks[ii]] = present;
 	    }
 	}
-	console.log("Inside checkUrl: " + JSON.stringify(out, null, 4));
+	//write out check output from URL
+	console.log(JSON.stringify(out, null, 4));
     });
 
     return out;
@@ -97,12 +98,17 @@ if (require.main == module) {
         .option('-f,--file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
         .option('-u,--url <theUrl>', 'URL that points to an HTML file')
         .parse(process.argv);
-    var checkJsonUrl = checkUrl(program.url, program.checks);
-    console.log("Checks for Url: ");
-    console.log(JSON.stringify(checkJsonUrl, null, 4));
-    //var checkJson = checkHtmlFile(program.file, program.checks);
-    //var outJson = JSON.stringify(checkJson, null, 4);
-    //console.log(outJson);
+
+    if ((program.url != null) && (program.url.length > 0)) {
+	checkUrl(program.url, program.checks);
+    }  else {
+    //console.log("Checks for Url: ");
+    //console.log(JSON.stringify(checkJsonUrl, null, 4));
+    //console.log("Check for file: " + program.file);
+    var checkJson = checkHtmlFile(program.file, program.checks);
+    var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
